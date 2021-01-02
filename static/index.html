@@ -8,14 +8,12 @@
   <title>My little chat app</title>
 </head>
 <body>
-  <div class="chat-dump"></div>
+  <div class="message-container"></div>
 
-  <form class="chat-form">
-    <label class="chat-label">
+  <form id="send-form">
         <p id='entermsg'>Enter a message:</p>
-        <input type="text" class="chat-input">
-    </label>
-    <input type="submit" class="chat-submit" value="enter">
+        <input type="text" id="send-input">
+    <button type="submit" id="send-submit" >Send</button>
   </form>
 
   <script src="socket.io/socket.io.js"></script>

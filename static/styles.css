@@ -3,7 +3,7 @@ body {
     font-family: sans-serif;
 }
 
-.chat-dump {
+.message-container {
     width: 100%;
     height: 500px;
     border-radius: 5px;
@@ -44,7 +44,7 @@ form{
     width: 100%;
 }
 
-.chat-input {
+#send-input {
     border-radius: 5px;
     background-color:white;
     box-sizing: border-box;
@@ -53,7 +53,7 @@ form{
     padding: 10px;
     padding-bottom: 30px;
 }
-.chat-submit{
+#send-submit{
     width: 28%;
     height: 50px;
     box-sizing: border-box;
