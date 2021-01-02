@@ -124,7 +124,7 @@ io.on('connection', socket => {
   });
 
   socket.on('send-chat-message', message => {
-    socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] })
+    socket.broadcast.emit('chat-message', { message: message, name: userAndSockets[socket.id] })
     console.log('message from client: ', message)
   })
 
