@@ -26,8 +26,15 @@ var database = process.env.DATABASE_URL || 'campeonatodb'
 var conn = ""
 console.log(database)
 if (process.env.DATABASE_URL) {
-    conn = new Sequelize(database)
-}
+    conn = new Sequelize(database,{
+      dialect:  'postgres',
+      dialectOptions:{
+        ssl: {
+          require:true 
+        }
+      },
+    })
+  }
 else {
   conn = new Sequelize('chat_app_db', 'postgres', 'dawson', {
     host: 'localhost',
