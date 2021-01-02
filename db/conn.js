@@ -22,11 +22,15 @@ if (process.env.DATABASE_URL) {
   });
 }
 */
-var database = process.env.DATABASE_URL || 'campeonatodb'
 var conn = ""
-console.log(database)
 if (process.env.DATABASE_URL) {
-    conn = new Sequelize(database,{
+    conn = new Sequelize(process.env.DATABASE_URL,{
+      username: process.env.DB_USERNAME,
+      database: process.env.DB_DATABASE,
+      password: process.env.DB_PASSWORD,
+      host: process.env.DB_HOSTNAME,
+      port: 5432,
+      ssl: true,
       dialect:  'postgres',
       dialectOptions:{
         ssl: {
