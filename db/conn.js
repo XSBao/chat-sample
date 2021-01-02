@@ -23,6 +23,8 @@ if (process.env.DATABASE_URL) {
 }
 */
 var conn = ""
+console.log('.........DATABASE_URL is: ')
+console.log(process.env.DATABASE_URL)
 if (process.env.DATABASE_URL) {
     conn = new Sequelize(process.env.DATABASE_URL,{
       username: process.env.DB_USERNAME,
