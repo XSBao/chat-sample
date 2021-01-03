@@ -149,7 +149,7 @@ io.on('connection', socket => {
             .then((message) => {
               //socket.emit('incomingMessage', {message, friendName});
               const receiverSocketId = findSockedIdByName(receiverName);
-              socket.to(receiverSocketId).emit('incomingMessage', {text: message.text, time: message.createdAt, senderName});
+              socket.to(receiverSocketId).emit('incomingMessage', {text: message.text, time: convertUTCDateToLocalDate(message.createdAt), senderName});
           });
     });
     

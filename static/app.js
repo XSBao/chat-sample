@@ -46,6 +46,10 @@ function undateFriendOnlineState(friendName, isOnline, lastLogoutTime){
     }
 }
 
+function convertUTCDateToLocalDate(date) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(),  date.getHours(), date.getMinutes(), date.getSeconds()));
+}
+
 //submit message
 chat.addEventListener('submit', e => {
   e.preventDefault()
@@ -62,7 +66,7 @@ socket.on('welcome-back', () => {
 
 socket.on('priorMessages', messages => {
     messages.forEach(message => {
-        const msg = `${message.user.name}: ${message.text} at time: ${message.createdAt}`
+        const msg = `${message.user.name}: ${message.text} at time: ${convertUTCDateToLocalDate(message.createdAt)}`
         appendMessage(msg, false, false)  
     });
       
