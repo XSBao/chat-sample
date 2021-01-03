@@ -123,8 +123,9 @@ io.on('connection', socket => {
   }
 
 
-  function convertUTCDateToLocalDate(date) {
-    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(),  date.getHours(), date.getMinutes(), date.getSeconds()));
+  function convertUTCDateToLocalDate(utcdate) {
+    date = new Date(utcdate.toString())
+    return date.toString();
 }
 
   //get new message from user
@@ -160,10 +161,9 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     const currentUserName = userAndSockets[socket.id];
     console.log('.............friend-state-change..............')
-    const standarTime = new Date();
-    userLastLogoutTime[currentUserName] = convertUTCDateToLocalDate(standarTime);
+    userLastLogoutTime[currentUserName] = new Date();
     console.log(userLastLogoutTime[currentUserName] )
-    socket.broadcast.emit('friend-state-change', {friendName: currentUserName, isFriendOnline:false, lastLogoutTime: userLastLogoutTime[currentUserName]})
+    socket.broadcast.emit('friend-state-change', {friendName: currentUserName, isFriendOnline:false, lastLogoutTime: convertUTCDateToLocalDate(userLastLogoutTime[currentUserName])})
     console.log('.............friend-state-change.....****.........')
     delete userAndSockets[socket.id]
   })

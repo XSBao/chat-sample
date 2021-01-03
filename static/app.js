@@ -46,8 +46,9 @@ function undateFriendOnlineState(friendName, isOnline, lastLogoutTime){
     }
 }
 
-function convertUTCDateToLocalDate(date) {
-    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(),  date.getHours(), date.getMinutes(), date.getSeconds()));
+function convertUTCDateToLocalDate(utcdate) {
+    date = new Date(utcdate.toString())
+    return date.toString();
 }
 
 //submit message
