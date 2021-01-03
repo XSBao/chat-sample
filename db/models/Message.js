@@ -8,7 +8,19 @@ const Message = conn.define('message', {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV4,
     primaryKey: true
+  },
+  createdAt: {
+    type: 'TIMESTAMP',
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+    allowNull: false
+  },
+  updatedAt: {
+    type: 'TIMESTAMP',
+    defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+    allowNull: false
   }
+},{
+  timestamps: false
 });
 
 Message.createMessage = (text, sender, receiver) => {
@@ -18,11 +30,14 @@ Message.createMessage = (text, sender, receiver) => {
         user: {
           _id: sender.id,
           name: sender.name
-        }
+        },
       }),
       conn.models.conversation.findOrCreateConversation(sender.id, receiver.id)
     ])
-      .then(([message, conversation]) => message.setConversation(conversation));
+      .then(([message, conversation]) => {
+        message.setConversation(conversation)
+        return message;
+      });
   };
   
 module.exports = Message;

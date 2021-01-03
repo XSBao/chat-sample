@@ -1,6 +1,6 @@
 
 const socket = io()
-const messageContainer = document.querySelector('.message-container')
+const chatContainer = document.getElementById('chat')
 
 const chat = document.getElementById('send-form')
 const chatInput = document.getElementById('send-input')
@@ -16,10 +16,34 @@ while(password.length == 0){
 }
 socket.emit('new-user-authentication', {name:name, password: password})
 
-function appendMessage(message){
+function appendMessage(message, isMe, isLast){
     const messageElement = document.createElement('div');
     messageElement.innerText = message;
-    messageContainer.appendChild(messageElement)
+    if(isMe){
+        messageElement.classList.add(['mine', 'messages'])
+        if(isLast){
+            messageElement.classList.add(['message', 'last'])
+        }else{
+            messageElement.classList.add('message')
+        }
+    }else{
+        messageElement.classList.add(['yours', 'messages'])
+        if(isLast){
+            messageElement.classList.add(['message', 'last'])
+        }else{
+            messageElement.classList.add('message')
+        }
+    }
+    chatContainer.appendChild(messageElement)
+}
+
+function undateFriendOnlineState(friendName, isOnline, lastLogoutTime){
+    const friendStateElement = document.getElementById('friend-state')
+    if(isOnline){        
+        friendStateElement.innerText = `${friendName} is online`
+    }else{
+        friendStateElement.innerText = `${friendName} is offline since ${lastLogoutTime}`
+    }
 }
 
 //submit message
@@ -31,28 +55,40 @@ chat.addEventListener('submit', e => {
   chatInput.value = ''
 })
 
-socket.on('user-connected', userName => {
-    appendMessage(`Welcome back, ${userName}`)    
+socket.on('welcome-back', () => {
+    const welcomeMsgElement = document.getElementById("welcome-msg");
+    welcomeMsgElement.innerText = `Welcome back, ${name}`  
+})
+
+socket.on('priorMessages', messages => {
+    messages.forEach(message => {
+        const msg = `${message.user.name}: ${message.text} at time: ${message.createdAt}`
+        appendMessage(msg, false, false)  
+    });
+      
 })
 
 socket.on('inform-friend-info', data => {
     if(data.isFriendOnline){
-        appendMessage(`Your friend ${data.friendName} is online`)
+        undateFriendOnlineState(data.friendName, true, null )
     }else{
-        appendMessage(`Your friend ${data.friendName} is offline`)
+        undateFriendOnlineState(data.friendName, false, data.lastLogoutTime)
     }
 })
 
 socket.on('friend-state-change', data => {
     if(data.isFriendOnline){
-        appendMessage(`Your friend ${data.friendName} is online.`)
+        undateFriendOnlineState(data.friendName, true, null )
     }else{
-        appendMessage(`Your friend ${data.friendName} is offline.`)
+        console.log('.................')
+        console.log(data.lastLogoutTime)
+        undateFriendOnlineState(data.friendName, false, data.lastLogoutTime)
     }
 })
 
-socket.on('chat-message', data => {
-    appendMessage(`${data.name}: ${data.message}`)
+socket.on('incomingMessage', data => {
+    const msg = `${data.senderName}: ${data.text} at ${data.time}`
+    appendMessage(msg, false, true)
 })
 
 socket.on('user-login-failed', () => {
