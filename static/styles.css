@@ -107,7 +107,6 @@
   .messages {
     margin-top: 30px;
     display: flex;
-    flex: 1 1 auto;
     flex-direction: column-reverse;
   }
   
@@ -116,6 +115,7 @@
     padding: 8px 15px;
     margin-top: 5px;
     margin-bottom: 5px;
+    flex: 1 1 auto;
     display: inline-block;
   }
   
