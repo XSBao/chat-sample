@@ -63,7 +63,8 @@ function undateFriendOnlineState(friendName, isOnline, lastLogoutTime){
     if(isOnline){        
         friendStateElement.innerText = `${friendName} is online`
     }else{
-        friendStateElement.innerText = `${friendName} is offline since ${lastLogoutTime}`
+        const timeStr = extractShortTimeStrFromUTC(lastLogoutTime);
+        friendStateElement.innerText = `${friendName} is offline since ${timeStr}`
     }
 }
 

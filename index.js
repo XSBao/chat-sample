@@ -161,7 +161,7 @@ io.on('connection', socket => {
   socket.on('disconnect', () => {
     const currentUserName = userAndSockets[socket.id];
     userLastLogoutTime[currentUserName] = new Date();
-    socket.broadcast.emit('friend-state-change', {friendName: currentUserName, isFriendOnline:false, lastLogoutTime: convertUTCDateToLocalDate(userLastLogoutTime[currentUserName])})
+    socket.broadcast.emit('friend-state-change', {friendName: currentUserName, isFriendOnline:false, lastLogoutTime: userLastLogoutTime[currentUserName]})
     delete userAndSockets[socket.id]
   })
 })
