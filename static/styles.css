@@ -96,7 +96,6 @@
   
   .chat {
     width: 350px;
-    max-height:100%;
     overflow:auto;
     border: solid 1px #EEE;
     display: flex;
@@ -115,7 +114,6 @@
     padding: 8px 15px;
     margin-top: 5px;
     margin-bottom: 5px;
-    flex: 1 1 auto;
     display: inline-block;
   }
   
