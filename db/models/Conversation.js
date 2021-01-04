@@ -17,7 +17,7 @@ Conversation.findOrCreateConversation = function(user1Id, user2Id) {
         }
       },
       include: [ conn.models.message ],
-      order: [[ conn.models.message, 'createdAt', 'DESC' ]]
+      order: [[ conn.models.message, 'createdAt', 'ASC' ]]
     })
       .then(conversations => {
         if(conversations.length !== 0) {
@@ -29,7 +29,7 @@ Conversation.findOrCreateConversation = function(user1Id, user2Id) {
             user2Id: user2Id            
           }, {
             include: [ conn.models.message ],
-            order: [[ conn.models.message, 'createdAt', 'DESC' ]]
+            order: [[ conn.models.message, 'createdAt', 'ASC' ]]
           });
         }
       });

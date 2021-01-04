@@ -7,7 +7,6 @@ const User = conn.define('user', {
 });
 
 User.findIdByName = function(userName) {
-  console.log(`searchinging username: ${userName}`)
   const result = User.findAll({
     attributes:['id'],
     where: {

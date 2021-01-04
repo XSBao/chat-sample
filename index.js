@@ -150,7 +150,7 @@ io.on('connection', socket => {
             .then((message) => {
               //socket.emit('incomingMessage', {message, friendName});
               const receiverSocketId = findSockedIdByName(receiverName);
-              socket.broadcast.emit('incomingMessage', {text: message.text, time: convertUTCDateToLocalDate(message.createdAt), senderName});
+              socket.broadcast.emit('incomingMessage', {text: message.text, time: message.createdAt, senderName});
           });
     });
     
@@ -160,11 +160,8 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     const currentUserName = userAndSockets[socket.id];
-    console.log('.............friend-state-change..............')
     userLastLogoutTime[currentUserName] = new Date();
-    console.log(userLastLogoutTime[currentUserName] )
     socket.broadcast.emit('friend-state-change', {friendName: currentUserName, isFriendOnline:false, lastLogoutTime: convertUTCDateToLocalDate(userLastLogoutTime[currentUserName])})
-    console.log('.............friend-state-change.....****.........')
     delete userAndSockets[socket.id]
   })
 })

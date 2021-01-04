@@ -89,8 +89,8 @@
   
   #message-container {
     font-family: helvetica;
-    display: flex ;
-    flex-direction: column;
+    display:flex ;
+    flex-direction: column-reverse;
     align-items: center;
   }
   
@@ -100,14 +100,14 @@
     overflow:auto;
     border: solid 1px #EEE;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     padding: 10px;
   }
   
   .messages {
     margin-top: 30px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
   
   .message {

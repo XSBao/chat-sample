@@ -1,5 +1,9 @@
 
-const socket = io()
+//const socket = io()
+//referring to https://stackoverflow.com/questions/41924713/node-js-socket-io-page-refresh-multiple-connections
+//to deal with user fast refreshes page
+const socket = io({transports: ['websocket'], upgrade: false});
+
 const chatContainer = document.getElementById('chat')
 
 const chat = document.getElementById('send-form')
@@ -20,21 +24,38 @@ function appendMessage(message, isMe, isLast){
     const messageElement = document.createElement('div');
     messageElement.innerText = message;
     if(isMe){
-        messageElement.classList.add(['mine', 'messages'])
+        const mine_messagesDiv = document.createElement('div');
+        mine_messagesDiv.classList.add(...['mine', 'messages'])
         if(isLast){
-            messageElement.classList.add(['message', 'last'])
+            const messageLastDiv = document.createElement('div');
+            messageLastDiv.innerText = message;
+            messageLastDiv.classList.add(...['message', 'last'])
+            mine_messagesDiv.appendChild(messageLastDiv);
         }else{
-            messageElement.classList.add('message')
+            const messageDiv = document.createElement('div');
+            messageDiv.innerText = message;
+            messageDiv.classList.add('message')
+            mine_messagesDiv.appendChild(messageDiv);
         }
+        chatContainer.insertBefore(mine_messagesDiv, chatContainer.firstChild)
+        //chatContainer.appendChild(mine_messagesDiv)
     }else{
-        messageElement.classList.add(['yours', 'messages'])
+        const yours_messagesDiv = document.createElement('div');
+        yours_messagesDiv.classList.add(...['yours', 'messages'])
         if(isLast){
-            messageElement.classList.add(['message', 'last'])
+            const messageLastDiv = document.createElement('div');
+            messageLastDiv.innerText = message;
+            messageLastDiv.classList.add(...['message', 'last'])
+            yours_messagesDiv.appendChild(messageLastDiv);
         }else{
-            messageElement.classList.add('message')
+            const messageDiv = document.createElement('div');
+            messageDiv.innerText = message;
+            messageDiv.classList.add('message')
+            yours_messagesDiv.appendChild(messageDiv);
         }
-    }
-    chatContainer.appendChild(messageElement)
+        chatContainer.insertBefore(yours_messagesDiv, chatContainer.firstChild)
+        //chatContainer.appendChild(yours_messagesDiv)
+    }    
 }
 
 function undateFriendOnlineState(friendName, isOnline, lastLogoutTime){
@@ -51,11 +72,19 @@ function convertUTCDateToLocalDate(utcdate) {
     return date.toString();
 }
 
+function extractShortTimeStrFromUTC(utcdate){
+    const str = convertUTCDateToLocalDate(utcdate);
+    const index = str.indexOf('GMT')
+    return str.substring(0, index)
+}
+
 //submit message
 chat.addEventListener('submit', e => {
   e.preventDefault()
   const message = chatInput.value
-  appendMessage('You: ' + chatInput.value)
+
+  timeStr = extractShortTimeStrFromUTC(new Date());
+  appendMessage(`You: ${chatInput.value} \n ${timeStr}`, true, true)
   socket.emit('send-chat-message', chatInput.value)
   chatInput.value = ''
 })
@@ -67,8 +96,14 @@ socket.on('welcome-back', () => {
 
 socket.on('priorMessages', messages => {
     messages.forEach(message => {
-        const msg = `${message.user.name}: ${message.text} at time: ${convertUTCDateToLocalDate(message.createdAt)}`
-        appendMessage(msg, false, false)  
+        const timeStr = extractShortTimeStrFromUTC(message.createdAt)
+        if(message.user.name === name){
+            const msg = `You: ${message.text} \n ${timeStr}`
+            appendMessage(msg, true, false)
+        }else{
+            const msg = `${message.user.name}: ${message.text} \n ${timeStr}`
+            appendMessage(msg, false, false)  
+        }        
     });
       
 })
@@ -85,14 +120,13 @@ socket.on('friend-state-change', data => {
     if(data.isFriendOnline){
         undateFriendOnlineState(data.friendName, true, null )
     }else{
-        console.log('.................')
-        console.log(data.lastLogoutTime)
         undateFriendOnlineState(data.friendName, false, data.lastLogoutTime)
     }
 })
 
 socket.on('incomingMessage', data => {
-    const msg = `${data.senderName}: ${data.text} at ${data.time}`
+    const timeStr = extractShortTimeStrFromUTC(data.time);
+    const msg = `${data.senderName}: ${data.text} \n ${timeStr}`
     appendMessage(msg, false, true)
 })
 
