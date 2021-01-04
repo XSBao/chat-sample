@@ -4,7 +4,7 @@
 //to deal with user fast refreshes page
 const socket = io({transports: ['websocket'], upgrade: false});
 
-const chatContainer = document.getElementById('chat')
+const chatContainer = document.querySelector('.chat')
 
 const chat = document.getElementById('send-form')
 const chatInput = document.getElementById('send-input')

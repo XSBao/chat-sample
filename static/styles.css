@@ -94,7 +94,7 @@
     align-items: center;
   }
   
-  #chat {
+  .chat {
     width: 350px;
     max-height:100%;
     overflow:auto;
@@ -113,8 +113,8 @@
   .message {
     border-radius: 20px;
     padding: 8px 15px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     display: inline-block;
   }
   
