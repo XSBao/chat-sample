@@ -63,9 +63,14 @@ function undateFriendOnlineState(friendName, isOnline, lastLogoutTime){
     if(isOnline){        
         friendStateElement.innerText = `${friendName} is online`
     }else{
-        const timeStr = extractShortTimeStrFromUTC(lastLogoutTime);
-        friendStateElement.innerText = `${friendName} is offline since ${timeStr}`
+        if(lastLogoutTime == undefined){
+            friendStateElement.innerText = `${friendName} is offline`
+        }else{
+            const timeStr = extractShortTimeStrFromUTC(lastLogoutTime);
+            friendStateElement.innerText = `${friendName} is offline since ${timeStr}`
+        }     
     }
+    console.log('friend state is updated while running the app at the first time')
 }
 
 function convertUTCDateToLocalDate(utcdate) {
@@ -113,6 +118,7 @@ socket.on('priorMessages', messages => {
 })
 
 socket.on('inform-friend-info', data => {
+    console.log('...........informing friend state............')
     if(data.isFriendOnline){
         undateFriendOnlineState(data.friendName, true, null )
     }else{

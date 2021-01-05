@@ -14,6 +14,6 @@ module.exports = {
   models: {
     Conversation,
     User,
-    Message
+    Message,
   }
 };
