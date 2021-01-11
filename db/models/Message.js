@@ -32,7 +32,7 @@ Message.createMessage = (text, sender, receiver) => {
           name: sender.name
         },
       }),
-      conn.models.conversation.findOrCreateConversation(sender.id, receiver.id)
+      conn.models.conversation.findOrCreateConversation(sender.id, receiver.id, 0)
     ])
       .then(([message, conversation]) => {
         message.setConversation(conversation)

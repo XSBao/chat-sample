@@ -1,190 +1,225 @@
 * {
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-    height:812px;
-    background-image: url('header_opt.jpg');
-  }
-  
-  /* Style the header */
-  header {
-    padding-top: 10px;
-    text-align: center;
-    font-size: 25px;
-    font-family: 'Satisfy', cursive;
-    font-family: 'Schoolbell', cursive;
-    color: #ff0000;
-    height:100px;
-    width: 375px;
-  }
-  /* Clear floats after the columns */
-  #container {
-    position: relative;
-    content: "";
-    display: table;
-    clear: both;
-    height: 712px;
-    border: 2px solid blue;
-    width: 375px;
-  }
-  
-  #user-info-container{
-    position: relative;
-    height: 81px;
-    width:100%;
-    color:black;
-    font-family: helvetica;
-    border: 5px solid grey;
-  }
-  
-  #message-container{
-    position: relative;
-    height: 500px;
-    width:100%;
-    border: 5px solid grey;
-  }
-  
-  #send-message-container{
-    position: absolute;
-    height: 120px;
-    width:100%;
-    bottom: 0;
-    border: 5px solid grey;
-  }
-  
-  #send-input{
-    width:80%;
-    border: 1px solid blue;
-    height: 55px;
-    padding: 12px 20px;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    background-color: #f8f8f8;
-    font-family: helvetica;
-    resize: none;
-    height: 100px;
-  }
-  
-  #send-submit{
-    float: right;
-    width:20%;
-    height: 100px;
-    font-size: 16px;
-    background-color: pink;
-    border-radius: 12px;
-  }
-  
-  .his-message{
-    margin-top: 10px;
-    direction: ltr;
-    border: 1px
-  }
-  .my-message{
-    margin-top: 10px;
-    direction: rtl;
-  }
-  
-  #message-container {
-    font-family: helvetica;
-    display:flex ;
-    flex-direction: column-reverse;
-    align-items: center;
-  }
-  
-  .chat {
-    width: 350px;
-    max-height:100%;
-    overflow:auto;
-    border: solid 1px #EEE;
-    display: flex;
-    flex-direction: column-reverse;
-    padding: 10px;
-  }
-  
-  .messages {
-    flex-shrink: 0;
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column-reverse;
-  }
-  
-  .message {
-    flex-shrink: 0;
-    border-radius: 20px;
-    padding: 8px 15px;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    display: inline-block;
-  }
-  
-  .yours {
-    align-items: flex-start;
-  }
-  
-  .yours .message {
-    margin-right: 25%;
-    background-color: #EEE;
-    position: relative;
-  }
-  
-  .yours .message.last:before {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
-    left: -7px;
-    height: 20px;
-    width: 20px;
-    background: #EEE;
-    border-bottom-right-radius: 15px;
-  }
-  .yours .message.last:after {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    bottom: 0;
-    left: -10px;
-    width: 10px;
-    height: 20px;
-    background: #ff9999;
-    border-bottom-right-radius: 10px;
-  }
-  
-  .mine {
-    align-items: flex-end;
-  }
-  
-  .mine .message {
-    color: white;
-    margin-left: 25%;
-    background: rgb(0, 120, 254);
-    position: relative;
-  }
-  
-  .mine .message.last:before {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    bottom: 0;
-    right: -8px;
-    height: 20px;
-    width: 20px;
-    background: rgb(0, 120, 254);
-    border-bottom-left-radius: 15px;
-  }
-  
-  .mine .message.last:after {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    bottom: 0;
-    right: -10px;
-    width: 10px;
-    height: 20px;
-    background: #ff9999;
-    border-bottom-left-radius: 10px;
-  }
-  
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  height:812px;
+  background-image: url('header_opt.jpg');
+}
+
+/* Style the header */
+header {
+  padding-top: 10px;
+  text-align: center;
+  font-size: 35px;
+  font-family: 'Satisfy', cursive;
+  font-family: 'Schoolbell', cursive;
+  color: #ff0000;
+  height:100px;
+  width: 375px;
+}
+
+h5 {
+  display: block;
+  font-size: 0.83em;
+  margin-block-start: 0.2em;
+  margin-block-end: 0.2em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+
+/* Clear floats after the columns */
+#container {
+  position: relative;
+  content: "";
+  display: table;
+  clear: both;
+  height: 712px;
+  border: 1px solid orchid;
+  width: 375px;
+}
+
+#user-info-container{
+  position: relative;
+  height: 76px;
+  width:100%;
+  color:black;
+  font-family: helvetica;
+  border: 1px solid grey;
+}
+
+p{
+  margin-block-start: 0.3em;
+  margin-block-end: 0.3em;
+  display: block;
+}
+
+#welcome-msg{
+  width: 60%;
+  float: left;
+}
+
+#notificationBtn{
+  width: 40%;
+  float: right;
+}
+
+#friend-state{
+  width: 100%;
+  clear: both;
+}
+
+#system-info{
+  width: 100%;
+  clear: both;
+}
+
+#message-container{
+  position: relative;
+  height: 555px;
+  width:100%;
+  border: 1px solid grey;
+}
+
+#send-message-container{
+  position: absolute;
+  height: 80px;
+  width:100%;
+  bottom: 0;
+}
+
+#send-input{
+  width:80%;
+  border: 1px solid blue;
+  height: 80px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-family: helvetica;
+  resize: none;
+}
+
+#send-submit{
+  float: right;
+  width:20%;
+  height: 80px;
+  font-size: 16px;
+  background-color: pink;
+  border-radius: 12px;
+}
+
+.his-message{
+  margin-top: 10px;
+  direction: ltr;
+  border: 1px
+}
+.my-message{
+  margin-top: 10px;
+  direction: rtl;
+}
+
+#message-container {
+  font-family: helvetica;
+  display:flex ;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.chat {
+  width: 350px;
+  max-height:100%;
+  overflow:auto;
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 10px;
+}::-webkit-scrollbar{
+  display: none;
+}
+
+.messages {
+  flex-shrink: 0;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.message {
+  flex-shrink: 0;
+  border-radius: 20px;
+  padding: 8px 15px;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  display: inline-block;
+}
+
+.yours {
+  align-items: flex-start;
+}
+
+.yours .message {
+  margin-right: 25%;
+  background-color: #EEE;
+  position: relative;
+}
+
+.yours .message.last:before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  left: -7px;
+  height: 20px;
+  width: 20px;
+  background: #EEE;
+  border-bottom-right-radius: 15px;
+}
+.yours .message.last:after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: -10px;
+  width: 10px;
+  height: 20px;
+  background: #fdc0d0;
+  border-bottom-right-radius: 10px;
+}
+
+.mine {
+  align-items: flex-end;
+}
+
+.mine .message {
+  color: white;
+  margin-left: 25%;
+  background: rgb(0, 120, 254);
+  position: relative;
+}
+
+.mine .message.last:before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  right: -8px;
+  height: 20px;
+  width: 20px;
+  background: rgb(0, 120, 254);
+  border-bottom-left-radius: 15px;
+}
+
+.mine .message.last:after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  right: -10px;
+  width: 10px;
+  height: 20px;
+  background: #ff9999;
+  border-bottom-left-radius: 10px;
+}
