@@ -105,8 +105,9 @@ io.on('connection', socket => {
         const friendName = getFriendName(name);
 
         //the messages in the latest 3 days wil be displayed
-        Conversation.findOrCreateConversation(currentUser.id, friendUser.id, 3).then((conversation) => {
-          if (conversation.length !== 0) {//no conversation record in db
+        const opts = {};
+        opts['days'] = 3;
+        Conversation.findOrCreateConversation(currentUser.id, friendUser.id, opts).then((conversation) => {
             let titles = []
             let texts = []
             let times = []            
@@ -126,7 +127,7 @@ io.on('connection', socket => {
               times.push(message.createdAt)
           });
             socket.emit('priorMessages', {titles, texts, times, isme})
-          }
+          
         });
 
         let title = (name === 'yan') ? 'Babe' : name;
