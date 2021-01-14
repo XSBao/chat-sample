@@ -6,7 +6,7 @@ const server = require('http').createServer(app)
 const path = require('path')
 //const io = require('socket.io')(server);
 
-const io = require('socket.io')(server, {'pingTimeout': 5000, 'pingInterval': 25000});
+const io = require('socket.io')(server, { 'pingTimeout': 5000, 'pingInterval': 25000 });
 
 const { User, Conversation, Message } = require('./db').models;
 //User.sync({ force: false });
@@ -32,9 +32,9 @@ function isOnline(friendName) {
   return -1;
 }
 
-function searchAndDisconnectDuplicateClients(userName, socketId){
+function searchAndDisconnectDuplicateClients(userName, socketId) {
   const id = isOnline(userName)
-  if(id !== -1 && id !== socketId){
+  if (id !== -1 && id !== socketId) {
     //find duplicate client, force it to drop
     forcedToDisconnect = true;
     io.to(id).emit('force-disconnect');
@@ -44,9 +44,6 @@ function searchAndDisconnectDuplicateClients(userName, socketId){
 
 io.on('connection', socket => {
   socket.on('new-user-authentication', credentials => {
-    console.log('analyzing user loging info on server side. id is: ')
-    console.log(`....${socket.id}......`)
-    
     const secret = 'Babe, I love u';
     const hash = crypto.createHmac('sha256', secret)
       .update(credentials.password)
@@ -56,18 +53,18 @@ io.on('connection', socket => {
     let name = credentials.name.trim().toLowerCase();
     let password = credentials.password;
 
-        function convertUTCDateToLocalDate(utcdate) {
-          if (utcdate == undefined) {
-              return "unknown time";
-          }
-          date = new Date(utcdate.toString())
-          return date.toString();
+    function convertUTCDateToLocalDate(utcdate) {
+      if (utcdate == undefined) {
+        return "unknown time";
       }
+      date = new Date(utcdate.toString())
+      return date.toString();
+    }
 
-      function extractShortTimeStrFromUTC(utcdate) {
-        const str = convertUTCDateToLocalDate(utcdate);
-        const index = str.indexOf('GMT')
-        return str.substring(0, index)
+    function extractShortTimeStrFromUTC(utcdate) {
+      const str = convertUTCDateToLocalDate(utcdate);
+      const index = str.indexOf('GMT')
+      return str.substring(0, index)
     }
 
     Promise.all([
@@ -108,30 +105,30 @@ io.on('connection', socket => {
         const opts = {};
         opts['days'] = 3;
         Conversation.findOrCreateConversation(currentUser.id, friendUser.id, opts).then((conversation) => {
-            let titles = []
-            let texts = []
-            let times = []            
-            let isme = []
-            conversation.messages.forEach(message => {
-              const timeStr = extractShortTimeStrFromUTC(message.createdAt)
-              let title =''
-              if (message.user.name === name) {//own message
-                isme.push(true)
-                  title = (name === 'yan') ? 'Babe' : 'You';
-              } else {
-                isme.push(false)
-                  title = (name === 'yan') ? 'Honey' : 'Babe';
-              }
-              titles.push(title)
-              texts.push(message.text)
-              times.push(message.createdAt)
+          let titles = []
+          let texts = []
+          let times = []
+          let isme = []
+          conversation.messages.forEach(message => {
+            const timeStr = extractShortTimeStrFromUTC(message.createdAt)
+            let title = ''
+            if (message.user.name === name) {//own message
+              isme.push(true)
+              title = (name === 'yan') ? 'Babe' : 'You';
+            } else {
+              isme.push(false)
+              title = (name === 'yan') ? 'Honey' : 'Babe';
+            }
+            titles.push(title)
+            texts.push(message.text)
+            times.push(message.createdAt)
           });
-            socket.emit('priorMessages', {titles, texts, times, isme})
-          
+          socket.emit('priorMessages', { titles, texts, times, isme })
+
         });
 
         let title = (name === 'yan') ? 'Babe' : name;
-        socket.emit('welcome-back', {title, toDisableNoteSetting: (name === 'yan')});
+        socket.emit('welcome-back', { title, toDisableNoteSetting: (name === 'yan') });
 
         //inform me of my friends's info
         title = (friendName === 'yan') ? 'Babe' : 'Honey'
@@ -143,7 +140,7 @@ io.on('connection', socket => {
           if (friendUser.lastLogout === null) {
             socket.emit('inform-friend-info', { title, isFriendOnline, lastLogoutTime: null });
           } else {
-            socket.emit('inform-friend-info', { title, isFriendOnline, lastLogoutTime: friendUser.lastLogout});
+            socket.emit('inform-friend-info', { title, isFriendOnline, lastLogoutTime: friendUser.lastLogout });
           }
         }
         //inform friends of my infor
@@ -172,8 +169,22 @@ io.on('connection', socket => {
     return -1;
   }
 
+  socket.on('typing', senderName => {
+    let title = (senderName === 'yan') ? 'Babe' : 'Honey';
+    const receiverName = getFriendName(senderName);
+    const receiverSocketid = findSockedIdByName(receiverName)
+    io.to(receiverSocketid).emit('typing-return', title)
+  })
+
+  socket.on('typing-done', senderName => {
+    let title = (senderName === 'yan') ? 'Babe' : 'Honey';
+    const receiverName = getFriendName(senderName);
+    const receiverSocketid = findSockedIdByName(receiverName)
+    io.to(receiverSocketid).emit('typing-done-return', title)
+  })
+
   //get new message from user
-  socket.on('send-chat-message', (message) => {    
+  socket.on('send-chat-message', (message) => {
     const senderName = userAndSockets[socket.id];
     const receiverName = getFriendName(senderName);
     //const sender = User.findUserByName(senderName)
@@ -201,7 +212,7 @@ io.on('connection', socket => {
 
           //send message back to the sender with the produced title
           title = (senderName === 'yan') ? 'Babe' : 'You'
-          socket.emit('display-your-own-message', { title, text: message.text, time: message.createdAt});
+          socket.emit('display-your-own-message', { title, text: message.text, time: message.createdAt });
 
         });
     });
@@ -214,19 +225,19 @@ io.on('connection', socket => {
     }
     const currentUserName = userAndSockets[socket.id];
     const logoutTime = new Date();
-    if(!forcedToDisconnect){//normally log out
-      User.updateState(currentUserName, logoutTime).then(result => {      
+    if (!forcedToDisconnect) {//normally log out
+      User.updateState(currentUserName, logoutTime).then(result => {
         //inform friends of my infor
         title = (currentUserName === 'yan') ? 'Babe' : 'Honey'
         const friendName = (currentUserName === 'yan') ? 'xueshan' : 'yan'
         const friendSocketid = findSockedIdByName(friendName)
-      if (result[0]) {
-        const logoutTime = result[1][0].lastLogout;
-        io.to(friendSocketid).emit('friend-state-change', { title, isFriendOnline: false, lastLogoutTime: logoutTime })
-        //socket.broadcast.emit('friend-state-change', { title, isFriendOnline: false, lastLogoutTime: logoutTime })
-      }
-    })
-    }else{//be foreced to logout, no need to inform firends.
+        if (result[0]) {
+          const logoutTime = result[1][0].lastLogout;
+          io.to(friendSocketid).emit('friend-state-change', { title, isFriendOnline: false, lastLogoutTime: logoutTime })
+          //socket.broadcast.emit('friend-state-change', { title, isFriendOnline: false, lastLogoutTime: logoutTime })
+        }
+      })
+    } else {//be foreced to logout, no need to inform firends.
       forcedToDisconnect = false;
     }
     delete userAndSockets[socket.id]

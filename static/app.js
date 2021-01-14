@@ -101,12 +101,12 @@ chat.addEventListener('submit', e => {
 notificationBtn.addEventListener('click', () => {
     function handlePermission(permission) {
         // set the button to shown or hidden, depending on what the user answers
-        if(Notification.permission === 'denied' || Notification.permission === 'default') {
-          notificationBtn.style.display = 'block';
+        if (Notification.permission === 'denied' || Notification.permission === 'default') {
+            notificationBtn.style.display = 'block';
         } else {
-          notificationBtn.style.display = 'none';
+            notificationBtn.style.display = 'none';
         }
-      }
+    }
 
     function checkNotificationPromise() {
         try {
@@ -119,18 +119,18 @@ notificationBtn.addEventListener('click', () => {
 
     if (!('Notification' in window)) {
         console.log("This browser does not support notifications.");
-      } else {
-        if(checkNotificationPromise()) {
-          Notification.requestPermission()
-          .then((permission) => {
-            handlePermission(permission);
-          })
+    } else {
+        if (checkNotificationPromise()) {
+            Notification.requestPermission()
+                .then((permission) => {
+                    handlePermission(permission);
+                })
         } else {
-          Notification.requestPermission(function(permission) {
-            handlePermission(permission);
-          });
+            Notification.requestPermission(function (permission) {
+                handlePermission(permission);
+            });
         }
-      }
+    }
 });
 
 socket.on('display-your-own-message', (data) => {
@@ -143,9 +143,9 @@ socket.on('display-your-own-message', (data) => {
 
 socket.on('welcome-back', (data) => {
     forcedToDisconnect = false;
-    if(data.toDisableNoteSetting){
+    if (data.toDisableNoteSetting) {
         notificationBtn.style.display = 'none';
-    }else{
+    } else {
         notificationBtn.style.display = 'block';
     }
     document.body.style.background = "url('header_opt.jpg')";
@@ -153,6 +153,11 @@ socket.on('welcome-back', (data) => {
     const welcomeMsgElement = document.getElementById("welcome-msg");
     welcomeMsgElement.innerText = `Welcome back, ${data.title}`
     chat.innerHTML = '<input type="text" id="send-input"><button type="submit" id="send-submit" >Send</button>'
+
+    const typer = document.getElementById('send-input');
+
+    typer.addEventListener('keydown', handleKeyDown);
+    typer.addEventListener('keyup', handleKeyUp);
 })
 
 socket.on('priorMessages', data => {
@@ -162,6 +167,8 @@ socket.on('priorMessages', data => {
         const msg = `${data.titles[i]}: ${data.texts[i]} \n ${timeStr}`
         appendMessage(msg, data.isme[i], false)
     }
+    var objDiv = document.querySelector(".chat");
+    objDiv.scrollTop = objDiv.scrollHeight;
 })
 
 socket.on('inform-friend-info', data => {
@@ -184,18 +191,17 @@ socket.on('incomingMessage', data => {
     const timeStr = extractShortTimeStrFromUTC(data.time);
     const msg = `${data.title}: ${data.text} \n ${timeStr}`
     appendMessage(msg, false, true)
-    
+
     console.log(document.hidden)
     console.log(data.displayNote)
-    if(document.hidden && data.displayNote){
-    //var img = '/to-do-notifications/img/icon-128.png';
-    var text = msg;
-    //var notification = new Notification('To do list', { body: text, icon: img });
-    var notification = new Notification('Our Home', { body: text });
-
+    if (document.hidden && data.displayNote) {
+        //var img = '/to-do-notifications/img/icon-128.png';
+        var text = msg;
+        //var notification = new Notification('To do list', { body: text, icon: img });
+        var notification = new Notification('Our Home', { body: text });
+    }
     var objDiv = document.querySelector(".chat");
     objDiv.scrollTop = objDiv.scrollHeight;
-}
 })
 
 socket.on('user-login-failed', () => {
@@ -204,19 +210,26 @@ socket.on('user-login-failed', () => {
     socket.emit('new-user-authentication', { name: name, password: password })
 })
 
-socket.on('force-disconnect',()=>{
+socket.on('force-disconnect', () => {
     forcedToDisconnect = true;
     socket.close();
     console.log('you are forced to be disconnected')
 })
 
-socket.on('duplicate-disconnected',()=>{
+socket.on('duplicate-disconnected', () => {
     systemInfoElement.innerText = 'Your another client is forced to logout.'
 })
 
+socket.on('typing-return', title => {
+    friendStateElement.innerHTML = `${title} is typing...`;
+})
+
+socket.on('typing-done-return', title => {
+    friendStateElement.innerHTML = `${title} is online`;
+})
+
 socket.on('disconnect', () => {
-    
-    if(!forcedToDisconnect){
+    if (!forcedToDisconnect) {
         //socket.connect();
         console.log('naturally disconnected, reconnecting...')
         socket.emit('new-user-authentication', { name: name, password: password })
@@ -231,4 +244,25 @@ socket.on('disconnect', () => {
     chat.innerText = ''
 })
 
+let timer, timeoutVal = 1000; // time it takes to wait for user to stop typing in ms
+let counter = 0;
 
+
+// when user is pressing down on keys, clear the timeout
+function handleKeyDown(e) {
+    counter = counter + 1;
+    if (counter === 1) {
+        socket.emit('typing', name)
+    }
+    window.clearTimeout(timer);
+}
+
+// when the user has stopped pressing on keys, set the timeout
+// if the user presses on keys before the timeout is reached, then this timeout is canceled
+function handleKeyUp(e) {
+    window.clearTimeout(timer); // prevent errant multiple timeouts from being generated
+    timer = window.setTimeout(() => {
+        counter = 0;
+        socket.emit('typing-done', name)
+    }, timeoutVal);
+}
