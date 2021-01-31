@@ -150,7 +150,7 @@ socket.on('welcome-back', (data) => {
     }
     document.body.style.background = "url('header_opt.jpg')";
     //loveHeader.innerText = 'We love \n for always and forever';
-    loveHeader.innerText = 'Our own chat applicaiton';
+    loveHeader.innerText = 'Our own chat application';
     const welcomeMsgElement = document.getElementById("welcome-msg");
     welcomeMsgElement.innerText = `Welcome back, ${data.title}`
     //chat.innerHTML = '<input type="text" id="send-input"><button type="submit" id="send-submit" >Send</button>'
