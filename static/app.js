@@ -149,11 +149,13 @@ socket.on('welcome-back', (data) => {
         notificationBtn.style.display = 'block';
     }
     document.body.style.background = "url('header_opt.jpg')";
-    loveHeader.innerText = 'We love \n for always and forever';
+    //loveHeader.innerText = 'We love \n for always and forever';
+    loveHeader.innerText = 'Our own chat applicaiton';
     const welcomeMsgElement = document.getElementById("welcome-msg");
     welcomeMsgElement.innerText = `Welcome back, ${data.title}`
-    chat.innerHTML = '<input type="text" id="send-input"><button type="submit" id="send-submit" >Send</button>'
+    //chat.innerHTML = '<input type="text" id="send-input"><button type="submit" id="send-submit" >Send</button>'
 
+    chat.innerHTML = '<textarea type="Text" id="send-input" cols="40" rows="5"></textarea><button type="submit" id="send-submit" >Send</button>'
     const typer = document.getElementById('send-input');
 
     typer.addEventListener('keydown', handleKeyDown);
@@ -205,8 +207,8 @@ socket.on('incomingMessage', data => {
 })
 
 socket.on('user-login-failed', () => {
-    const name = prompt("Wrong username or password. Type username again: ")
-    const password = prompt('Your password: ')
+    name = prompt("Wrong username or password. Type username again: ")
+    password = prompt('Your password: ')
     socket.emit('new-user-authentication', { name: name, password: password })
 })
 

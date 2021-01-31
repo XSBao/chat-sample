@@ -42,7 +42,6 @@ User.updateState = function (userName, logoutTime) {
 }
 
 User.findLogoutTimeByUser = function (userName) {
-  console.log('........2........')
   const result = State.findAll(
     {
       attributes: ['lastLogout'],

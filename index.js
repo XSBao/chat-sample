@@ -5,7 +5,8 @@ const app = express()
 const server = require('http').createServer(app)
 const path = require('path')
 //const io = require('socket.io')(server);
-
+const Babe = 'Yan'
+const Honey = 'Xueshan'
 const io = require('socket.io')(server, { 'pingTimeout': 5000, 'pingInterval': 25000 });
 
 const { User, Conversation, Message } = require('./db').models;
@@ -109,29 +110,32 @@ io.on('connection', socket => {
           let texts = []
           let times = []
           let isme = []
-          conversation.messages.forEach(message => {
-            const timeStr = extractShortTimeStrFromUTC(message.createdAt)
-            let title = ''
-            if (message.user.name === name) {//own message
-              isme.push(true)
-              title = (name === 'yan') ? 'Babe' : 'You';
-            } else {
-              isme.push(false)
-              title = (name === 'yan') ? 'Honey' : 'Babe';
-            }
-            titles.push(title)
-            texts.push(message.text)
-            times.push(message.createdAt)
-          });
-          socket.emit('priorMessages', { titles, texts, times, isme })
+          if (conversation.messages !== undefined) {
+            conversation.messages.forEach(message => {
+              const timeStr = extractShortTimeStrFromUTC(message.createdAt)
+              let title = ''
+              if (message.user.name === name) {//own message
+                isme.push(true)
+                title = (name === 'yan') ? Babe : 'You';
+              } else {
+                isme.push(false)
+                title = (name === 'yan') ? Honey : Babe;
+              }
+              titles.push(title)
+              texts.push(message.text)
+              times.push(message.createdAt)
+            });
+            socket.emit('priorMessages', { titles, texts, times, isme })
+          }
+
 
         });
 
-        let title = (name === 'yan') ? 'Babe' : name;
+        let title = (name === 'yan') ? Babe : name;
         socket.emit('welcome-back', { title, toDisableNoteSetting: (name === 'yan') });
 
         //inform me of my friends's info
-        title = (friendName === 'yan') ? 'Babe' : 'Honey'
+        title = (friendName === 'yan') ? Babe : Honey
 
         const isFriendOnline = (isOnline(friendName) !== -1);
         if (isFriendOnline) {
@@ -144,7 +148,7 @@ io.on('connection', socket => {
           }
         }
         //inform friends of my infor
-        title = (name === 'yan') ? 'Babe' : 'Honey'
+        title = (name === 'yan') ? Babe : Honey
         const friendSocketid = findSockedIdByName(friendName)
         io.to(friendSocketid).emit('friend-state-change', { title, isFriendOnline: true, lastLogoutTime: null });
         //socket.broadcast.emit('friend-state-change', { title, isFriendOnline: true, lastLogoutTime: null });
@@ -170,14 +174,14 @@ io.on('connection', socket => {
   }
 
   socket.on('typing', senderName => {
-    let title = (senderName === 'yan') ? 'Babe' : 'Honey';
+    let title = (senderName === 'yan') ? Babe : Honey;
     const receiverName = getFriendName(senderName);
     const receiverSocketid = findSockedIdByName(receiverName)
     io.to(receiverSocketid).emit('typing-return', title)
   })
 
   socket.on('typing-done', senderName => {
-    let title = (senderName === 'yan') ? 'Babe' : 'Honey';
+    let title = (senderName === 'yan') ? Babe : Honey;
     const receiverName = getFriendName(senderName);
     const receiverSocketid = findSockedIdByName(receiverName)
     io.to(receiverSocketid).emit('typing-done-return', title)
@@ -204,14 +208,14 @@ io.on('connection', socket => {
       Message.createMessage(message, sender[0], receiver[0])
         .then((message) => {
           //socket.emit('incomingMessage', {message, friendName});
-          let title = (senderName === 'yan') ? 'Babe' : 'Honey';
+          let title = (senderName === 'yan') ? Babe : Honey;
           //send mesage back to the receivers
           const receiverSocketid = findSockedIdByName(receiverName)
           io.to(receiverSocketid).emit('incomingMessage', { title, text: message.text, time: message.createdAt, displayNote: (senderName === 'yan') })
           //socket.broadcast.emit('incomingMessage', { title, text: message.text, time: message.createdAt, displayNote: (senderName === 'yan') });
 
           //send message back to the sender with the produced title
-          title = (senderName === 'yan') ? 'Babe' : 'You'
+          title = (senderName === 'yan') ? Babe : 'You'
           socket.emit('display-your-own-message', { title, text: message.text, time: message.createdAt });
 
         });
@@ -228,7 +232,7 @@ io.on('connection', socket => {
     if (!forcedToDisconnect) {//normally log out
       User.updateState(currentUserName, logoutTime).then(result => {
         //inform friends of my infor
-        title = (currentUserName === 'yan') ? 'Babe' : 'Honey'
+        title = (currentUserName === 'yan') ? Babe : Honey
         const friendName = (currentUserName === 'yan') ? 'xueshan' : 'yan'
         const friendSocketid = findSockedIdByName(friendName)
         if (result[0]) {

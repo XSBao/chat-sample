@@ -15,7 +15,7 @@ header {
   font-size: 35px;
   font-family: 'Satisfy', cursive;
   font-family: 'Schoolbell', cursive;
-  color: #ff0000;
+  color: #d51bdb;
   height:100px;
   width: 375px;
 }
@@ -54,7 +54,7 @@ p{
   margin-block-start: 0.3em;
   margin-block-end: 0.3em;
   display: block;
-  color:fuchsia;
+  color:white;
 }
 
 #welcome-msg{
